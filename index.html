@@ -1,29 +1,47 @@
 <!DOCTYPE html>
-<html lang="bg">
-<head>
-  <meta charset="UTF-8">
-  <title>Търсене на животно</title>
-</head>
+<html>
+<head><title>Prolog в HTML с Tau Prolog</title></head>
 <body>
-  <h1>Информация за животно</h1>
-  <label for="animalId">Въведи ID на животно:</label>
-  <input type="text" id="animalId">
-  <button onclick="getAnimal()">Търси</button>
-  <div id="result"></div>
+  <h1>Търси животно по ID</h1>
+  <input type="number" id="id" />
+  <button onclick="search()">Търси</button>
+  <pre id="output"></pre>
 
+  <script src="https://cdn.jsdelivr.net/npm/tau-prolog/modules/core.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tau-prolog/modules/lists.js"></script>
   <script>
-    function getAnimal() {
-      const id = document.getElementById("animalId").value;
-      fetch(`http://localhost:3000/animal?id=${id}`)
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById("result").innerText =
-            data.error ? data.error :
-            `Име: ${data.name}, Среда: ${data.habitat}`;
-        })
-        .catch(err => {
-          document.getElementById("result").innerText = "Грешка при заявката.";
-        });
+    let session = pl.create();
+
+    session.consult(`
+      animal(1, 'Лъв', 'Савана').
+      animal(2, 'Пингвин', 'Антарктика').
+      animal(3, 'Мече', 'Гора').
+    `);
+
+    function search() {
+      const id = document.getElementById('id').value;
+      if (!id) {
+        document.getElementById('output').textContent = 'Моля, въведете ID!';
+        return;
+      }
+
+      const query = `animal(${id}, Name, Habitat).`;
+      session.query(query);
+
+      session.answers(x => {
+        if (x === false) {
+          document.getElementById('output').textContent = "Няма животно с това ID.";
+        } else if (x === null) {
+          // няма повече отговори
+        } else {
+          let nameMatch = session.format_answer(x).match(/Name = '([^']+)'/);
+          let habitatMatch = session.format_answer(x).match(/Habitat = '([^']+)'/);
+          if (nameMatch && habitatMatch) {
+            document.getElementById('output').textContent =
+              `Име: ${nameMatch[1]}\nСреда: ${habitatMatch[1]}`;
+          }
+        }
+      });
     }
   </script>
 </body>
