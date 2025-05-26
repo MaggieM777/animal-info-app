@@ -8,37 +8,49 @@
   <pre id="output"></pre>
 
   <script src="https://unpkg.com/tau-prolog/modules/core.js"></script>
-<script src="https://unpkg.com/tau-prolog/modules/lists.js"></script>
+  <script src="https://unpkg.com/tau-prolog/modules/lists.js"></script>
   <script>
-    let session = pl.create();
+    let session;
 
-    session.consult(`
-      animal(1, 'Лъв', 'Савана').
-      animal(2, 'Пингвин', 'Антарктика').
-      animal(3, 'Мече', 'Гора').
-    `);
+    function initSession() {
+      session = pl.create();
+      session.consult(`
+        animal(1, 'Лъв', 'Савана').
+        animal(2, 'Пингвин', 'Антарктика').
+        animal(3, 'Мече', 'Гора').
+      `);
+    }
+
+    initSession();
 
     function search() {
-      const id = document.getElementById('id').value;
+      const id = document.getElementById('id').value.trim();
+      const output = document.getElementById('output');
       if (!id) {
-        document.getElementById('output').textContent = 'Моля, въведете ID!';
+        output.textContent = 'Моля, въведете ID!';
         return;
       }
 
       const query = `animal(${id}, Name, Habitat).`;
+
+      // Създаваме нова сесия за всяка заявка (за да е "чиста")
+      initSession();
+
       session.query(query);
 
       session.answers(x => {
         if (x === false) {
-          document.getElementById('output').textContent = "Няма животно с това ID.";
+          output.textContent = "Няма животно с това ID.";
         } else if (x === null) {
-          // няма повече отговори
+          // Няма повече отговори
         } else {
+          // Взимаме стойностите от отговора
           let nameMatch = session.format_answer(x).match(/Name = '([^']+)'/);
           let habitatMatch = session.format_answer(x).match(/Habitat = '([^']+)'/);
           if (nameMatch && habitatMatch) {
-            document.getElementById('output').textContent =
-              `Име: ${nameMatch[1]}\nСреда: ${habitatMatch[1]}`;
+            output.textContent = `Име: ${nameMatch[1]}\nСреда: ${habitatMatch[1]}`;
+          } else {
+            output.textContent = "Грешка при извличане на резултата.";
           }
         }
       });
