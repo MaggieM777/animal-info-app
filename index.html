@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>Търсене на животно</title>
+</head>
+<body>
+  <h1>Информация за животно</h1>
+  <label for="animalId">Въведи ID на животно:</label>
+  <input type="text" id="animalId">
+  <button onclick="getAnimal()">Търси</button>
+  <div id="result"></div>
+
+  <script>
+    function getAnimal() {
+      const id = document.getElementById("animalId").value;
+      fetch(`http://localhost:3000/animal?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("result").innerText =
+            data.error ? data.error :
+            `Име: ${data.name}, Среда: ${data.habitat}`;
+        })
+        .catch(err => {
+          document.getElementById("result").innerText = "Грешка при заявката.";
+        });
+    }
+  </script>
+</body>
+</html>
