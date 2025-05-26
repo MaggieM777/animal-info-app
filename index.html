@@ -1,19 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="bg">
 <head>
-  <title>Търсене на човек по ID</title>
+  <meta charset="UTF-8" />
+  <title>Задание: Търсене на човек по ID</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      background: #f9f9f9;
+      color: #333;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    h1 {
+      color: #005f73;
+      text-align: center;
+    }
+    p {
+      line-height: 1.6;
+      font-size: 1.1em;
+    }
+    ul {
+      margin-left: 20px;
+      font-size: 1.05em;
+    }
+    code {
+      background: #e0e0e0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      font-size: 1.1em;
+    }
+    input[type=number] {
+      width: 100%;
+      max-width: 200px;
+      padding: 8px 12px;
+      font-size: 1em;
+      border: 2px solid #005f73;
+      border-radius: 6px;
+      transition: border-color 0.3s ease;
+    }
+    input[type=number]:focus {
+      outline: none;
+      border-color: #0a9396;
+      box-shadow: 0 0 5px #94d2bd;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px 20px;
+      font-size: 1.1em;
+      background-color: #0a9396;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #005f73;
+    }
+    pre {
+      background: #e0fbfc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 1.1em;
+      white-space: pre-wrap;
+      color: #001219;
+    }
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 2px solid #005f73;
+    }
+    .images {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .images img {
+      max-width: 280px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      cursor: zoom-in;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* По-силна лупа ефект при посочване */
+    .images img:hover {
+      transform: scale(1.7);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      z-index: 20;
+      position: relative;
+      cursor: zoom-in;
+    }
+  </style>
 </head>
 <body>
-  <h1>Търсене на човек по ID</h1>
-  
-  <label for="personId">Въведи ID:</label>
-  <input type="number" id="personId" min="1" />
+  <h1>Задание: Търсене на човек по ID</h1>
+
+  <p>
+    Създайте уеб приложение със списък от хора: всеки човек има уникално ID, име, възраст и град.
+    Когато въведете ID в полето и натиснете бутона <strong>"Търси"</strong>, ще се покаже информацията за този човек.
+  </p>
+
+  <p><strong>Как работи JavaScript частта?</strong></p>
+  <ul>
+    <li>Данните за хората са записани в масив от обекти с име <code>people</code>.</li>
+    <li>Когато потребителят натисне бутона, се изпълнява функцията <code>searchPerson()</code>.</li>
+    <li>Функцията взима стойността от полето за въвеждане (ID).</li>
+    <li>Търси в масива <code>people</code> обект, който има това ID.</li>
+    <li>Ако го намери, показва информацията за човека в текстовото поле под бутона.</li>
+    <li>Ако не го намери, показва съобщение, че няма човек с това ID.</li>
+  </ul>
+
+  <hr />
+
+  <h1>Моля, тествай програмата</h1>
+
+  <label for="personId">Въведи ID на човек:</label>
+  <input type="number" id="personId" min="1" placeholder="Например: 1" />
   <button onclick="searchPerson()">Търси</button>
-  
+
   <pre id="result"></pre>
 
+  <p>
+    А сега разгледай кода и напиши подобна програмка. После я качи в GitHub Pages.
+  </p>
+
+  <div class="images">
+    <img src="Screenshot_4.png" alt="Screenshot 4" />
+    <img src="Screenshot_5.png" alt="Screenshot 5" />
+  </div>
+
   <script>
-    // Данни за хора (като "база данни" в масив от обекти)
     const people = [
       { id: 1, name: "Иван Иванов", age: 30, city: "София" },
       { id: 2, name: "Мария Петрова", age: 25, city: "Пловдив" },
@@ -23,6 +152,7 @@
     function searchPerson() {
       const input = document.getElementById("personId");
       const result = document.getElementById("result");
+
       const id = Number(input.value);
 
       if (!id) {
@@ -33,7 +163,11 @@
       const person = people.find(p => p.id === id);
 
       if (person) {
-        result.textContent = `ID: ${person.id}\nИме: ${person.name}\nВъзраст: ${person.age}\nГрад: ${person.city}`;
+        result.textContent =
+          `ID: ${person.id}\n` +
+          `Име: ${person.name}\n` +
+          `Възраст: ${person.age}\n` +
+          `Град: ${person.city}`;
       } else {
         result.textContent = "Няма човек с това ID.";
       }
