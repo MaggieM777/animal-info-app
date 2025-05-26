@@ -1,57 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head><title>Prolog в HTML с Tau Prolog</title></head>
+<head>
+  <title>Търсене на човек по ID</title>
+</head>
 <body>
-  <h1>Търси животно по ID</h1>
-  <input type="number" id="id" />
-  <button onclick="search()">Търси</button>
-  <pre id="output"></pre>
+  <h1>Търсене на човек по ID</h1>
+  
+  <label for="personId">Въведи ID:</label>
+  <input type="number" id="personId" min="1" />
+  <button onclick="searchPerson()">Търси</button>
+  
+  <pre id="result"></pre>
 
-  <script src="https://unpkg.com/tau-prolog/modules/core.js"></script>
-  <script src="https://unpkg.com/tau-prolog/modules/lists.js"></script>
   <script>
-    let session;
+    // Данни за хора (като "база данни" в масив от обекти)
+    const people = [
+      { id: 1, name: "Иван Иванов", age: 30, city: "София" },
+      { id: 2, name: "Мария Петрова", age: 25, city: "Пловдив" },
+      { id: 3, name: "Георги Георгиев", age: 40, city: "Варна" },
+    ];
 
-    function initSession() {
-      session = pl.create();
-      session.consult(`
-        animal(1, sss, ffff).
-      `);
-    }
+    function searchPerson() {
+      const input = document.getElementById("personId");
+      const result = document.getElementById("result");
+      const id = Number(input.value);
 
-    initSession();
-
-    function search() {
-      const id = document.getElementById('id').value.trim();
-      const output = document.getElementById('output');
       if (!id) {
-        output.textContent = 'Моля, въведете ID!';
+        result.textContent = "Моля, въведи валидно ID!";
         return;
       }
 
-      const query = `animal(${id}, Name, Habitat).`;
+      const person = people.find(p => p.id === id);
 
-      // Създаваме нова сесия за всяка заявка (за да е "чиста")
-      initSession();
-
-      session.query(query);
-
-      session.answers(x => {
-        if (x === false) {
-          output.textContent = "Няма животно с това ID.";
-        } else if (x === null) {
-          // Няма повече отговори
-        } else {
-          // Взимаме стойностите от отговора
-          let nameMatch = session.format_answer(x).match(/Name = '([^']+)'/);
-          let habitatMatch = session.format_answer(x).match(/Habitat = '([^']+)'/);
-          if (nameMatch && habitatMatch) {
-            output.textContent = `Име: ${nameMatch[1]}\nСреда: ${habitatMatch[1]}`;
-          } else {
-            output.textContent = "Грешка при извличане на резултата.";
-          }
-        }
-      });
+      if (person) {
+        result.textContent = `ID: ${person.id}\nИме: ${person.name}\nВъзраст: ${person.age}\nГрад: ${person.city}`;
+      } else {
+        result.textContent = "Няма човек с това ID.";
+      }
     }
   </script>
 </body>
